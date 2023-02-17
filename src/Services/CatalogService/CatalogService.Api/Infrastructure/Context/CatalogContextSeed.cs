@@ -145,16 +145,19 @@ public class CatalogContextSeed
         var fileContent = File.ReadAllLines(fileName)
                     .Skip(1) // skip header row
                     .Select(row => row.Split(','))
-                    .Select(column => new CatalogItem()
+                    .Select(column =>
                     {
-                        CatalogTypeId = catalogTypeIdLookup[column[0]],
-                        CatalogBrandId = catalogBrandIdLookup[column[1]],
-                        Description = column[2].Trim('"').Trim(),
-                        Name = column[3].Trim('"').Trim(),
-                        Price = Decimal.Parse(column[4].Trim('"').Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
-                        PictureFileName = column[5].Trim('"').Trim(),
-                        AvailableStock = string.IsNullOrEmpty(column[6]) ? 0 : int.Parse(column[6]),
-                        OnReorder = Convert.ToBoolean(column[7])
+                        return new CatalogItem()
+                        {
+                            CatalogTypeId = catalogTypeIdLookup[column[0]],
+                            CatalogBrandId = catalogBrandIdLookup[column[1]],
+                            Description = column[2].Trim('"').Trim(),
+                            Name = column[3].Trim('"').Trim(),
+                            Price = Decimal.Parse(column[4].Trim('"').Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture),
+                            PictureFileName = column[5].Trim('"').Trim(),
+                            AvailableStock = string.IsNullOrEmpty(column[6]) ? 0 : int.Parse(column[6]),
+                            OnReorder = Convert.ToBoolean(column[7])
+                        };
                     });
 
         return fileContent;
