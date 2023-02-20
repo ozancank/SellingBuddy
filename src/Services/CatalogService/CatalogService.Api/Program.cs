@@ -1,4 +1,5 @@
 using CatalogService.Api.Extensions;
+using CatalogService.Api.Infrastructure;
 using CatalogService.Api.Infrastructure.Context;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -10,7 +11,10 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<CatalogSettings>(builder.Configuration.GetSection("CatalogSettings"));
 builder.Services.ConfigureDbContext(builder.Configuration);
+
+builder.Services.ConfigureConsul(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,5 +39,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.RegisterWithConsul(app.Lifetime);
 
 app.Run();
