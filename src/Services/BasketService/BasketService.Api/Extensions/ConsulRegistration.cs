@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace CatalogService.Api.Extensions;
+namespace BasketService.Api.Extensions;
 
 public static class ConsulRegistration
 {
@@ -25,26 +25,26 @@ public static class ConsulRegistration
 
         var features = app.Properties["server.Features"] as FeatureCollection;
         var addresses = features.Get<IServerAddressesFeature>();
-        var address = addresses.Addresses.Any() ? addresses.Addresses.First() : "http://localhost:5004";
+        var address = addresses.Addresses.Any() ? addresses.Addresses.First() : "http://localhost:5003";
 
         var uri = new Uri(address);
-        var registration = new AgentServiceRegistration()
+        var registration = new AgentServiceRegistration
         {
-            ID = "CatalogService",
-            Name = "CatalogService",
-            Address = $"{uri.Host}",
+            ID = "BasketService",
+            Name = "BasketService",
+            Address = uri.Host,
             Port = uri.Port,
-            Tags = new[] { "Catalog Service", "Catalog" }
+            Tags = new[] { "Basket Service", "Basket" }
         };
 
         logger.LogInformation("Registering with Consul");
         consulClient.Agent.ServiceDeregister(registration.ID).Wait();
         consulClient.Agent.ServiceRegister(registration).Wait();
 
-        lifetime.ApplicationStopping.Register(() =>
+        lifetime.ApplicationStopped.Register(() =>
         {
             logger.LogInformation("Deregistering from Consul");
-            consulClient.Agent.ServiceDeregister(registration.ID).Wait();
+            consulClient.Agent.ServiceDeregister(registration.ID);
         });
 
         return app;

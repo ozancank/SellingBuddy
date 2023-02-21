@@ -25,7 +25,7 @@ public static class ConsulRegistration
 
         var features = app.Properties["server.Features"] as FeatureCollection;
         var addresses = features.Get<IServerAddressesFeature>();
-        var address = /*addresses.Addresses.First();*/ "http://localhost:5005";
+        var address = addresses.Addresses.Any() ? addresses.Addresses.First() : "http://localhost:5005";
 
         var uri = new Uri(address);
         var registration = new AgentServiceRegistration
