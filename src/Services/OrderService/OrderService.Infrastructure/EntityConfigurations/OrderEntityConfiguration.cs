@@ -9,10 +9,10 @@ public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("Orders", OrderDbContext.DEFAULT_SCHEMA);
+        builder.ToTable("orders", OrderDbContext.DEFAULT_SCHEMA);
 
         builder.HasKey(o => o.Id);
-        builder.Property(o => o.Id).ValueGeneratedOnAdd();
+        builder.Property(i => i.Id).ValueGeneratedOnAdd();
 
         builder.Ignore(i => i.DomainEvents);
 
@@ -31,7 +31,7 @@ public class OrderEntityConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasOne(o => o.Buyer)
             .WithMany()
-            .HasForeignKey(o => o.BuyerId);
+            .HasForeignKey(i => i.BuyerId);
 
         builder.HasOne(o => o.OrderStatus)
             .WithMany()
