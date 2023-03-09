@@ -1,7 +1,29 @@
 ﻿@page "/catalog"
 
-<h3>CatalogPage</h3>
+<div class="row">
+    @if (model != null && model.Data.Any())
+    {
+        foreach (var catalogItem in model.Data)
+        {
+            <WebApp.Components.Catalog.ProductView.ProductView CatalogItem="catalogItem" OnClick="()=>AddToCart(catalogItem)" />
+        }
+    }
+</div>
 
 @code {
-    Pa
+    PaginatedItemsViewModel<CatalogItem> model = new PaginatedItemsViewModel<CatalogItem>();
+
+    [Inject]
+    ICatalogService catalogService { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        model = await catalogService.GetCatalogItems();
+    }
+
+
+    public async Task AddToCart(CatalogItem catalogItem)
+    {
+        await Task.CompletedTask;
+    }
 }
