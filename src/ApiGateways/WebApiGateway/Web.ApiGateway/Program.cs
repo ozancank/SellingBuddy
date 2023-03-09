@@ -25,6 +25,12 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddOcelot().AddConsul();
 
+builder.Services.AddSingleton<IHttpContextAccessor,HttpContextAccessor>();
+builder.Services.AddHttpClient("basket", c =>
+{
+
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
