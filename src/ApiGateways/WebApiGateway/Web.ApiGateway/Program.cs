@@ -1,6 +1,9 @@
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
+using Web.ApiGateway.Infrastructure;
+using Web.ApiGateway.Services;
+using Web.ApiGateway.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,10 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IBasketService, BasketService>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
@@ -25,11 +32,15 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddOcelot().AddConsul();
 
-builder.Services.AddSingleton<IHttpContextAccessor,HttpContextAccessor>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpClient("basket", c =>
 {
-
-});
+    c.BaseAddress = new Uri(builder.Configuration["urls:basket"]);
+}).AddHttpMessageHandler<HttpClientDelegatingHandler>();
+builder.Services.AddHttpClient("catalog", c =>
+{
+    c.BaseAddress = new Uri(builder.Configuration["urls:catalog"]);
+}).AddHttpMessageHandler<HttpClientDelegatingHandler>();
 
 var app = builder.Build();
 

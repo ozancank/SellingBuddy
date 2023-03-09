@@ -9,14 +9,27 @@ else
 }
 
 @code {
-    private bool isLoggedIn;
-    private int basketItemCount = 0;
+    [Inject]
+    IBasketService basketService { get; set; }
 
     [Inject]
     IIdentityService identityService{ get; set; }
 
     [Inject]
+    AppState appState { get; set; }
+
+    [Inject]
     NavigationManager navigationManager { get; set; }
+
+    private int basketItemCount = 0;    
+
+    bool isLoggedIn=false;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            appState.StateChanged += async (source, property) => await AppState_StateChanged(source, property);
+    }
 
     protected override Task OnInitializedAsync()
     {
