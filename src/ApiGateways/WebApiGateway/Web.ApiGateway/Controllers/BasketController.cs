@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Web.ApiGateway.Models.Basket;
 using Web.ApiGateway.Services.Interfaces;
 
 namespace Web.ApiGateway.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
+[Authorize]
 public class BasketController : ControllerBase
 {
     private readonly ICatalogService _catalogService;
